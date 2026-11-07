@@ -6,8 +6,8 @@ compatibility_date = "2026-01-01"
 directory = "./public"
 
 [[kv_namespaces]]
-binding = "SYNTHETIX_KV"
-id = "REEMPLAZAR_CON_TU_KV_NAMESPACE_ID"
+binding = "SYNTHETIX_KVV"
+id = "61cdbea9311748bc8ed50b754b2b521e"
 
 [[r2_buckets]]
 binding = "SYNTHETIX_R2"
