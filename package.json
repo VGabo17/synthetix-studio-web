@@ -1,0 +1,9 @@
+{
+  "name": "synthetix-studio-web",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --remote",
+    "deploy": "wrangler deploy"
+  }
+}

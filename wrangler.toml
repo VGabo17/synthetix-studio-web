@@ -1,0 +1,14 @@
+name = "synthetix-studio-web"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+[assets]
+directory = "./public"
+
+[[kv_namespaces]]
+binding = "SYNTHETIX_KV"
+id = "REEMPLAZAR_CON_TU_KV_NAMESPACE_ID"
+
+[[r2_buckets]]
+binding = "SYNTHETIX_R2"
+bucket_name = "synthetix-studio-bucket"

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synthetix Studio Web | Edge Console</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glow-purple { box-shadow: 0 0 25px rgba(176, 38, 255, 0.25); }
+    .text-glow { text-shadow: 0 0 12px rgba(176, 38, 255, 0.7); }
+  </style>
+</head>
+<body class="bg-[#0a0a0a] text-zinc-100 min-h-screen font-sans p-4 sm:p-8">
+  <div class="max-w-5xl mx-auto space-y-8">
+    
+    <!-- Encabezado Synthetix Studio Web -->
+    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 bg-zinc-950/90 border border-purple-600/40 rounded-2xl glow-purple">
+      <div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-[#b026ff] to-indigo-400 text-glow">
+          SYNTHETIX STUDIO WEB
+        </h1>
+        <p class="text-xs sm:text-sm text-purple-300/70 mt-1 font-mono">
+          Cloudflare Worker • KV Database & R2 Storage
+        </p>
+      </div>
+      <div class="mt-4 sm:mt-0 flex items-center gap-2 px-3.5 py-1.5 bg-purple-950/50 border border-[#b026ff]/50 rounded-full text-xs text-purple-300 font-semibold">
+        <span class="w-2 h-2 rounded-full bg-[#b026ff] animate-ping"></span> Edge Ready
+      </div>
+    </header>
+
+    <!-- Grid de Consolas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Cloudflare KV -->
+      <section class="bg-zinc-950 border border-purple-900/40 p-6 rounded-2xl shadow-2xl space-y-4">
+        <div class="flex items-center justify-between border-b border-purple-900/40 pb-3">
+          <h2 class="text-lg font-bold text-purple-300 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#b026ff]"></span> Cloudflare KV
+          </h2>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-400 border border-purple-800/40">Key-Value Engine</span>
+        </div>
+
+        <form id="kvForm" class="space-y-3">
+          <input type="text" id="kvKey" placeholder="Clave (ej: config_site)" required class="w-full bg-zinc-900/90 border border-purple-900/50 rounded-xl px-3.5 py-2 text-sm text-slate-200 focus:outline-none focus:border-[#b026ff] transition">
+          <textarea id="kvValue" placeholder="Valor o JSON..." rows="3" required class="w-full bg-zinc-900/90 border border-purple-900/50 rounded-xl px-3.5 py-2 text-sm text-slate-200 focus:outline-none focus:border-[#b026ff] transition"></textarea>
+          <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-purple-700 via-[#b026ff] to-purple-600 hover:opacity-90 text-white font-semibold rounded-xl text-sm transition shadow-[0_0_18px_rgba(176,38,255,0.4)]">
+            Guardar en KV
+          </button>
+        </form>
+
+        <div class="pt-3 border-t border-zinc-900 space-y-2">
+          <label class="text-xs text-purple-400 font-medium">Consultar Clave:</label>
+          <div class="flex gap-2">
+            <input type="text" id="searchKey" placeholder="Nombre de clave..." class="flex-1 bg-zinc-900 border border-purple-900/50 rounded-xl px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-[#b026ff]">
+            <button onclick="getKV()" class="px-4 py-1.5 bg-purple-950/60 hover:bg-purple-900/60 border border-purple-700/60 text-purple-200 text-sm font-medium rounded-xl">Buscar</button>
+          </div>
+          <pre id="kvResult" class="bg-zinc-900/90 p-3 rounded-xl text-xs font-mono text-purple-200 border border-purple-950 min-h-[50px] overflow-x-auto">Esperando consulta...</pre>
+        </div>
+      </section>
+
+      <!-- Cloudflare R2 -->
+      <section class="bg-zinc-950 border border-purple-900/40 p-6 rounded-2xl shadow-2xl space-y-4">
+        <div class="flex items-center justify-between border-b border-purple-900/40 pb-3">
+          <h2 class="text-lg font-bold text-purple-300 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Cloudflare R2
+          </h2>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-400 border border-purple-800/40">Object Storage</span>
+        </div>
+
+        <div class="space-y-3">
+          <input type="text" id="r2Filename" placeholder="Nombre del archivo (ej: banner.png)" class="w-full bg-zinc-900/90 border border-purple-900/50 rounded-xl px-3.5 py-2 text-sm text-slate-200 focus:outline-none focus:border-[#b026ff] transition">
+          <input type="file" id="r2File" class="w-full bg-zinc-900/90 border border-purple-900/50 rounded-xl px-3 py-1.5 text-xs text-slate-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-purple-950 file:text-purple-300 border border-purple-900/40">
+          <button onclick="uploadR2()" class="w-full py-2.5 bg-gradient-to-r from-indigo-700 via-[#b026ff] to-purple-700 hover:opacity-90 text-white font-semibold rounded-xl text-sm transition shadow-[0_0_18px_rgba(176,38,255,0.4)]">
+            Subir Archivo a R2
+          </button>
+        </div>
+
+        <div class="pt-3 border-t border-zinc-900 space-y-2">
+          <label class="text-xs text-purple-400 font-medium">Obtener Archivo R2:</label>
+          <div class="flex gap-2">
+            <input type="text" id="fetchR2Filename" placeholder="Nombre exacto..." class="flex-1 bg-zinc-900 border border-purple-900/50 rounded-xl px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-[#b026ff]">
+            <button onclick="getR2()" class="px-4 py-1.5 bg-purple-950/60 hover:bg-purple-900/60 border border-purple-700/60 text-purple-200 text-sm font-medium rounded-xl">Abrir</button>
+          </div>
+          <p id="r2Status" class="text-xs text-purple-300 font-mono min-h-[20px]"></p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('kvForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const key = document.getElementById('kvKey').value;
+      const value = document.getElementById('kvValue').value;
+      const res = await fetch('/api/kv', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value })
+      });
+      const data = await res.json();
+      alert(data.success ? '✓ Guardado en KV' : 'X Error al guardar');
+    });
+
+    async function getKV() {
+      const key = document.getElementById('searchKey').value;
+      if (!key) return;
+      const res = await fetch(`/api/kv/${key}`);
+      const data = await res.json();
+      document.getElementById('kvResult').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function uploadR2() {
+      const filename = document.getElementById('r2Filename').value;
+      const fileInput = document.getElementById('r2File');
+      if (!filename || !fileInput.files[0]) return alert('Ingresa el nombre y selecciona un archivo');
+      
+      const file = fileInput.files[0];
+      const res = await fetch(`/api/r2/${filename}`, { method: 'PUT', body: file });
+      const data = await res.json();
+      document.getElementById('r2Status').textContent = data.success ? `✓ Subido a R2: ${filename}` : 'X Error al subir a R2';
+    }
+
+    async function getR2() {
+      const filename = document.getElementById('fetchR2Filename').value;
+      if (!filename) return;
+      window.open(`/api/r2/${filename}`, '_blank');
+    }
+  </script>
+</body>
+</html>
