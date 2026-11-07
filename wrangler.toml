@@ -1,5 +1,5 @@
 name = "synthetix-studio-web"
-main = "src/index.js"
+main = "src/index.ts"
 compatibility_date = "2026-01-01"
 
 [assets]
@@ -12,3 +12,10 @@ id = "61cdbea9311748bc8ed50b754b2b521e"
 [[r2_buckets]]
 binding = "SYNTHETIX_R2"
 bucket_name = "synthetix-studio-bucket"
+
+[vars]
+JWT_SECRET = "synthetix_super_secret_jwt_key_2026"
+DISCORD_CLIENT_ID = "REEMPLAZAR_DISCORD_CLIENT_ID"
+DISCORD_CLIENT_SECRET = "REEMPLAZAR_DISCORD_CLIENT_SECRET"
+DISCORD_REDIRECT_URI = "https://synthetix-studio-web.pages.dev/api/auth/discord/callback"
+STAFF_WEBHOOK_URL = "REEMPLAZAR_DISCORD_WEBHOOK_URL"
